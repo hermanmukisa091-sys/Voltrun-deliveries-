@@ -3,176 +3,467 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Volt Run Delivery | Uganda</title>
-<meta name="description" content="Fast, reliable parcel delivery in Kalagi, Nakifuma and surrounding areas. Book your delivery with Volt Run.">
+
+<title>Volt Run Delivery | Fast. Reliable. Convenient.</title>
+
+<meta name="description" content="Book reliable parcel, shopping and business delivery services with Volt Run Delivery in Kalagi and Nakifuma, Uganda.">
+
+<meta name="theme-color" content="#101c32">
 
 <style>
 :root {
-  --navy:#101c32;
-  --blue:#193d65;
-  --orange:#ffad24;
-  --light:#f4f7fb;
-  --white:#ffffff;
-  --text:#263449;
-  --muted:#718096;
+  --navy: #101c32;
+  --blue: #193e68;
+  --orange: #ffad24;
+  --light: #f4f7fb;
+  --white: #ffffff;
+  --text: #263449;
+  --muted: #718096;
+  --green: #168b56;
 }
-* {box-sizing:border-box;margin:0;padding:0}
-html {scroll-behavior:smooth}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family:Arial, sans-serif;
-  background:var(--light);
-  color:var(--text);
-  line-height:1.6;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--light);
+  color: var(--text);
+  line-height: 1.6;
 }
+
+a {
+  text-decoration: none;
+}
+
+button, input, select, textarea {
+  font: inherit;
+}
+
+/* HEADER */
+
 header {
-  background:var(--navy);
-  color:white;
-  padding:17px 7%;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  position:sticky;
-  top:0;
-  z-index:10;
+  background: var(--navy);
+  padding: 17px 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
+
 .logo {
-  font-size:22px;
-  font-weight:900;
-  color:var(--orange);
+  color: var(--orange);
+  font-size: 23px;
+  font-weight: 900;
+  letter-spacing: 1px;
 }
-.logo span {color:white}
+
+.logo span {
+  color: white;
+}
+
+nav {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+}
+
 nav a {
-  color:white;
-  text-decoration:none;
-  margin-left:20px;
-  font-size:14px;
+  color: white;
+  font-size: 14px;
 }
+
+nav .nav-button {
+  background: var(--orange);
+  color: var(--navy);
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+/* HERO */
+
 .hero {
-  background:linear-gradient(120deg,#101c32,#214c77);
-  color:white;
-  padding:90px 8%;
-  text-align:center;
+  background:
+    radial-gradient(circle at 85% 20%, #315b83 0, transparent 35%),
+    linear-gradient(125deg, #101c32, #193e68);
+  color: white;
+  text-align: center;
+  padding: 95px 7% 100px;
 }
-.hero .tag {
-  color:var(--orange);
-  font-weight:bold;
-  letter-spacing:2px;
-  font-size:12px;
+
+.hero-tag {
+  display: inline-block;
+  color: var(--orange);
+  border: 1px solid #ffad2470;
+  padding: 7px 15px;
+  border-radius: 30px;
+  font-size: 12px;
+  letter-spacing: 2px;
+  font-weight: bold;
 }
+
 .hero h1 {
-  font-size:clamp(34px,6vw,58px);
-  line-height:1.15;
-  margin:18px 0;
+  font-size: clamp(38px, 7vw, 64px);
+  line-height: 1.12;
+  margin: 25px 0 18px;
 }
+
+.hero h1 span {
+  color: var(--orange);
+}
+
 .hero p {
-  max-width:600px;
-  margin:0 auto 28px;
-  color:#dce6f1;
+  max-width: 620px;
+  margin: 0 auto 30px;
+  color: #dce6f1;
+  font-size: 17px;
 }
-.btn {
-  display:inline-block;
-  background:var(--orange);
-  color:#152238;
-  padding:14px 25px;
-  border:0;
-  border-radius:7px;
-  font-weight:bold;
-  text-decoration:none;
-  cursor:pointer;
-  font-size:15px;
+
+.primary-button {
+  display: inline-block;
+  padding: 15px 27px;
+  background: var(--orange);
+  color: var(--navy);
+  font-weight: bold;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
 }
-.btn:hover {background:#ffc45f}
+
+.primary-button:hover {
+  background: #ffc65f;
+  transform: translateY(-2px);
+}
+
+.hero-small {
+  margin-top: 24px;
+  font-size: 13px;
+  color: #c4d0df;
+}
+
+/* GENERAL SECTIONS */
+
 section {
-  padding:65px 7%;
-  max-width:1150px;
-  margin:auto;
+  padding: 65px 7%;
+  max-width: 1200px;
+  margin: auto;
 }
-.section-title {
-  text-align:center;
-  margin-bottom:35px;
+
+.section-heading {
+  text-align: center;
+  margin-bottom: 35px;
 }
-.section-title h2 {
-  color:var(--navy);
-  font-size:30px;
+
+.section-heading h2 {
+  color: var(--navy);
+  font-size: 30px;
+  margin-bottom: 8px;
 }
-.section-title p {color:var(--muted)}
+
+.section-heading p {
+  color: var(--muted);
+}
+
+/* SERVICES */
+
 .services {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:20px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
 }
-.service {
-  background:white;
-  padding:27px;
-  border-radius:12px;
-  box-shadow:0 5px 20px #14243a0d;
+
+.service-card {
+  background: white;
+  padding: 25px 20px;
+  border-radius: 12px;
+  box-shadow: 0 5px 22px #15243b0c;
+  border: 1px solid #e8edf3;
 }
-.service .emoji {font-size:32px}
-.service h3 {
-  color:var(--blue);
-  margin:12px 0;
+
+.service-icon {
+  font-size: 35px;
+  margin-bottom: 12px;
 }
-.service p {color:var(--muted);font-size:14px}
+
+.service-card h3 {
+  color: var(--blue);
+  font-size: 17px;
+  margin-bottom: 9px;
+}
+
+.service-card p {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* WHY CHOOSE US */
+
+.why {
+  background: white;
+  max-width: none;
+}
+
+.why-inner {
+  max-width: 1000px;
+  margin: auto;
+}
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  text-align: center;
+}
+
+.why-item {
+  padding: 20px;
+}
+
+.why-item strong {
+  display: block;
+  color: var(--blue);
+  margin: 8px 0;
+}
+
+.why-item p {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* COVERAGE */
+
 .coverage {
-  background:var(--navy);
-  color:white;
-  text-align:center;
-  max-width:none;
+  background: var(--navy);
+  max-width: none;
+  color: white;
+  text-align: center;
 }
-.coverage h2 {color:var(--orange)}
-.coverage p {margin-top:12px;color:#dce6f1}
-.order-area {
-  background:white;
-  padding:30px;
-  max-width:680px;
-  margin:25px auto;
-  border-radius:14px;
-  box-shadow:0 5px 25px #14243a12;
+
+.coverage h2 {
+  color: var(--orange);
+  font-size: 29px;
 }
+
+.coverage p {
+  margin-top: 12px;
+  color: #dce6f1;
+}
+
+/* BOOKING FORM */
+
+.booking-section {
+  background: var(--light);
+}
+
+.booking-form {
+  max-width: 690px;
+  margin: auto;
+  background: white;
+  padding: 32px;
+  border-radius: 14px;
+  box-shadow: 0 8px 35px #15243b12;
+  border: 1px solid #e8edf3;
+}
+
+.form-intro {
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.field {
+  margin-bottom: 17px;
+}
+
 label {
-  display:block;
-  margin:15px 0 7px;
-  font-weight:bold;
-  font-size:14px;
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--navy);
+  margin-bottom: 7px;
 }
-input,select,textarea {
-  width:100%;
-  padding:14px;
-  border:1px solid #d5dce5;
-  border-radius:7px;
-  font-size:16px;
-  background:white;
-  font-family:inherit;
+
+input, select, textarea {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #d8e0e9;
+  border-radius: 7px;
+  background: white;
+  color: var(--text);
+  outline: none;
+  font-size: 16px;
 }
-textarea {min-height:90px}
-.order-area button {width:100%;margin-top:22px}
-.note {
-  color:var(--muted);
-  font-size:13px;
-  text-align:center;
-  margin-top:14px;
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px #193e6814;
 }
+
+textarea {
+  min-height: 95px;
+  resize: vertical;
+}
+
+.form-submit {
+  width: 100%;
+  padding: 16px;
+  background: var(--green);
+  color: white;
+  border: none;
+  border-radius: 7px;
+  font-weight: bold;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.form-submit:hover {
+  background: #106c42;
+}
+
+.form-note {
+  text-align: center;
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 14px;
+}
+
+.form-error {
+  display: none;
+  background: #fff0f0;
+  color: #a52626;
+  padding: 12px;
+  border-radius: 7px;
+  margin-bottom: 15px;
+  font-size: 14px;
+}
+
+/* CONTACT */
+
 .contact {
-  text-align:center;
-  background:#eaf0f7;
-  max-width:none;
+  text-align: center;
+  background: white;
+  max-width: none;
 }
-.contact h2 {color:var(--navy)}
-.contact p {margin:10px}
+
+.contact h2 {
+  color: var(--navy);
+}
+
+.contact p {
+  margin: 10px;
+  color: var(--muted);
+}
+
+.contact-number {
+  color: var(--blue);
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* FOOTER */
+
 footer {
-  background:var(--navy);
-  color:white;
-  text-align:center;
-  padding:35px 15px;
+  background: var(--navy);
+  color: white;
+  padding: 38px 7%;
+  text-align: center;
 }
-footer .logo {margin-bottom:10px}
-footer a {color:var(--orange)}
-@media(max-width:600px) {
-  header {padding:15px 5%}
-  nav a {margin-left:10px;font-size:12px}
-  .hero {padding:70px 6%}
-  section {padding:50px 6%}
-  .order-area {padding:20px}
+
+footer .logo {
+  margin-bottom: 10px;
+}
+
+footer p {
+  color: #c4d0df;
+  font-size: 13px;
+  margin-top: 7px;
+}
+
+footer a {
+  color: var(--orange);
+}
+
+/* MOBILE */
+
+@media (max-width: 800px) {
+  .services {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .why-grid {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+}
+
+@media (max-width: 550px) {
+  header {
+    padding: 15px 4%;
+  }
+
+  .logo {
+    font-size: 18px;
+  }
+
+  nav {
+    gap: 10px;
+  }
+
+  nav a {
+    font-size: 12px;
+  }
+
+  nav .nav-button {
+    padding: 9px 10px;
+  }
+
+  .hero {
+    padding: 75px 6%;
+  }
+
+  .hero p {
+    font-size: 15px;
+  }
+
+  section {
+    padding: 50px 5%;
+  }
+
+  .services {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .booking-form {
+    padding: 22px 17px;
+  }
+
+  .section-heading h2 {
+    font-size: 25px;
+  }
 }
 </style>
 </head>
@@ -180,146 +471,312 @@ footer a {color:var(--orange)}
 <body>
 
 <header>
-  <div class="logo">⚡ <span>VOLT RUN</span></div>
+  <a class="logo" href="#home">⚡ <span>VOLT RUN</span></a>
+
   <nav>
     <a href="#services">Services</a>
-    <a href="#order">Book Delivery</a>
+    <a href="#contact">Contact</a>
+    <a class="nav-button" href="#order">Book Now</a>
   </nav>
 </header>
 
 <main>
 
-<div class="hero">
-  <div class="tag">VOLT RUN DELIVERY</div>
-  <h1>Your Parcel.<br>Our Responsibility.</h1>
-  <p>Reliable, convenient and fast delivery services for individuals and businesses in Kalagi, Nakifuma and surrounding areas.</p>
-  <a class="btn" href="#order">BOOK A DELIVERY →</a>
+<!-- HOMEPAGE -->
+
+<div class="hero" id="home">
+  <div class="hero-tag">YOUR LOCAL DELIVERY PARTNER</div>
+
+  <h1>Moving Your World.<br><span>One Delivery at a Time.</span></h1>
+
+  <p>
+    Fast, convenient and reliable delivery services
+    for individuals and businesses in Kalagi,
+    Nakifuma and surrounding areas.
+  </p>
+
+  <a class="primary-button" href="#order">
+    BOOK YOUR DELIVERY →
+  </a>
+
+  <div class="hero-small">
+    ⚡ Simple Booking &nbsp; • &nbsp; Reliable Service
+  </div>
 </div>
 
+<!-- SERVICES -->
+
 <section id="services">
-  <div class="section-title">
-    <h2>What We Deliver</h2>
-    <p>Delivery solutions made simple.</p>
+
+  <div class="section-heading">
+    <h2>Our Services</h2>
+    <p>Delivery solutions designed around your needs.</p>
   </div>
 
   <div class="services">
-    <div class="service">
-      <div class="emoji">📦</div>
+
+    <div class="service-card">
+      <div class="service-icon">📦</div>
       <h3>Parcel Delivery</h3>
-      <p>Send packages and personal items safely to their destination.</p>
+      <p>Convenient collection and delivery of parcels to your chosen destination.</p>
     </div>
 
-    <div class="service">
-      <div class="emoji">🛍️</div>
+    <div class="service-card">
+      <div class="service-icon">🛍️</div>
       <h3>Shopping Delivery</h3>
-      <p>Need an item collected and delivered? Let us help.</p>
+      <p>Need something purchased or collected? Request our shopping delivery service.</p>
     </div>
 
-    <div class="service">
-      <div class="emoji">🏪</div>
+    <div class="service-card">
+      <div class="service-icon">🏪</div>
       <h3>Business Delivery</h3>
-      <p>Delivery support for shops, sellers and local businesses.</p>
+      <p>Delivery support for local shops, traders and growing businesses.</p>
     </div>
 
-    <div class="service">
-      <div class="emoji">📄</div>
+    <div class="service-card">
+      <div class="service-icon">📄</div>
       <h3>Document Delivery</h3>
-      <p>Convenient transport of documents and important papers.</p>
+      <p>Convenient transportation of documents and important papers.</p>
     </div>
+
   </div>
 </section>
+
+<!-- WHY US -->
+
+<div class="why">
+  <div class="why-inner">
+
+    <div class="section-heading">
+      <h2>Why Choose Volt Run?</h2>
+      <p>We make requesting a delivery simple.</p>
+    </div>
+
+    <div class="why-grid">
+
+      <div class="why-item">
+        <div class="service-icon">📱</div>
+        <strong>Easy Booking</strong>
+        <p>Submit your delivery request directly from your phone.</p>
+      </div>
+
+      <div class="why-item">
+        <div class="service-icon">🤝</div>
+        <strong>Personal Service</strong>
+        <p>Speak directly with our team about your delivery.</p>
+      </div>
+
+      <div class="why-item">
+        <div class="service-icon">📍</div>
+        <strong>Local Coverage</strong>
+        <p>Serving Kalagi, Nakifuma and surrounding communities.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- COVERAGE -->
 
 <section class="coverage">
-  <h2>Our Delivery Coverage</h2>
-  <p>📍 Kalagi • Nakifuma • Surrounding areas</p>
-  <p>Contact us to confirm availability for your destination.</p>
+  <h2>Where We Operate</h2>
+  <p>📍 Kalagi &nbsp; | &nbsp; Nakifuma &nbsp; | &nbsp; Surrounding Areas</p>
+  <p>Contact us to confirm service availability at your destination.</p>
 </section>
 
-<section id="order">
-  <div class="section-title">
+<!-- ORDER FORM -->
+
+<section class="booking-section" id="order">
+
+  <div class="section-heading">
     <h2>Book Your Delivery</h2>
-    <p>Complete the form and send your request directly to our WhatsApp.</p>
+    <p>Provide your details and send your request to Volt Run.</p>
   </div>
 
-  <div class="order-area">
+  <div class="booking-form">
+
+    <p class="form-intro">
+      All fields marked with * are required.
+    </p>
+
+    <div class="form-error" id="formError" role="alert">
+      Please complete all required fields.
+    </div>
+
     <form id="orderForm">
 
-      <label for="name">Full Name *</label>
-      <input id="name" required placeholder="Enter your full name">
+      <div class="field">
+        <label for="customerName">Full Name *</label>
+        <input
+          id="customerName"
+          name="customerName"
+          type="text"
+          placeholder="Enter your full name"
+          autocomplete="name"
+          required
+        >
+      </div>
 
-      <label for="phone">Your Phone Number *</label>
-      <input id="phone" type="tel" required placeholder="07XXXXXXXX">
+      <div class="field">
+        <label for="customerPhone">Your Phone Number *</label>
+        <input
+          id="customerPhone"
+          name="customerPhone"
+          type="tel"
+          placeholder="e.g. 0731508798"
+          autocomplete="tel"
+          required
+        >
+      </div>
 
-      <label for="pickup">Pickup Location *</label>
-      <input id="pickup" required placeholder="Where should we collect?">
+      <div class="form-row">
 
-      <label for="destination">Delivery Destination *</label>
-      <input id="destination" required placeholder="Where should we deliver?">
+        <div class="field">
+          <label for="pickup">Pickup Location *</label>
+          <input
+            id="pickup"
+            name="pickup"
+            type="text"
+            placeholder="Collection location"
+            required
+          >
+        </div>
 
-      <label for="parcel">Parcel Type *</label>
-      <select id="parcel" required>
-        <option value="">Choose parcel type</option>
-        <option>Documents</option>
-        <option>Food</option>
-        <option>Clothes</option>
-        <option>Shopping</option>
-        <option>Electronics</option>
-        <option>Other</option>
-      </select>
+        <div class="field">
+          <label for="destination">Delivery Destination *</label>
+          <input
+            id="destination"
+            name="destination"
+            type="text"
+            placeholder="Where to deliver"
+            required
+          >
+        </div>
 
-      <label for="instructions">Additional Instructions</label>
-      <textarea id="instructions" placeholder="Describe your parcel or any special instructions"></textarea>
+      </div>
 
-      <button class="btn" type="submit">SEND DELIVERY REQUEST VIA WHATSAPP</button>
-      <p class="note">Your delivery request will be sent to our WhatsApp. Charges and availability will be confirmed before dispatch.</p>
+      <div class="field">
+        <label for="parcelType">What are we delivering? *</label>
+        <select id="parcelType" name="parcelType" required>
+          <option value="">Select parcel type</option>
+          <option value="Documents">Documents</option>
+          <option value="Food">Food</option>
+          <option value="Clothes">Clothes</option>
+          <option value="Shopping">Shopping</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Other">Other items</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="instructions">Additional Instructions</label>
+        <textarea
+          id="instructions"
+          name="instructions"
+          placeholder="Describe your parcel or any special requirements..."
+        ></textarea>
+      </div>
+
+      <button class="form-submit" type="submit">
+        SEND ORDER TO WHATSAPP →
+      </button>
+
+      <p class="form-note">
+        Your request is not confirmed until our team contacts you.
+        Delivery charges and availability will be discussed before dispatch.
+      </p>
 
     </form>
   </div>
 </section>
 
-<section class="contact">
-  <h2>Need Assistance?</h2>
-  <p>Talk to the Volt Run Delivery team.</p>
-  <p><strong>WhatsApp: +256 731 508 798</strong></p>
-  <a class="btn" href="https://wa.me/256731508798">CHAT WITH US</a>
+<!-- CONTACT -->
+
+<section class="contact" id="contact">
+  <h2>Let's Get Your Delivery Moving.</h2>
+
+  <p>Need assistance or have a question?</p>
+
+  <p class="contact-number">+256 731 508 798</p>
+
+  <a
+    class="primary-button"
+    href="https://wa.me/256731508798"
+    target="_blank"
+    rel="noopener"
+  >
+    CHAT WITH VOLT RUN
+  </a>
+
+  <p>Kalagi, Uganda</p>
 </section>
 
 </main>
 
 <footer>
   <div class="logo">⚡ VOLT RUN DELIVERY</div>
+
   <p>Fast. Reliable. Convenient.</p>
   <p>Kalagi, Uganda</p>
+  <p>WhatsApp: +256 731 508 798</p>
+
   <p>© 2026 Volt Run Delivery. All rights reserved.</p>
 </footer>
 
+<!-- WHATSAPP ORDER SYSTEM -->
+
 <script>
-document.getElementById("orderForm").addEventListener("submit",function(event) {
-  event.preventDefault();
+(function () {
 
-  const name = document.getElementById("name").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const pickup = document.getElementById("pickup").value.trim();
-  const destination = document.getElementById("destination").value.trim();
-  const parcel = document.getElementById("parcel").value;
-  const instructions = document.getElementById("instructions").value.trim();
+  "use strict";
 
-  const message =
-    "⚡ NEW VOLT RUN DELIVERY REQUEST\n\n" +
-    "Customer: " + name + "\n" +
-    "Phone: " + phone + "\n" +
-    "Pickup: " + pickup + "\n" +
-    "Destination: " + destination + "\n" +
-    "Parcel: " + parcel + "\n" +
-    "Instructions: " + (instructions || "None") +
-    "\n\nPlease confirm availability and delivery charges.";
+  const BUSINESS_NUMBER = "256731508798";
 
-  const whatsappURL =
-    "https://wa.me/256731508798?text=" +
-    encodeURIComponent(message);
+  const form = document.getElementById("orderForm");
+  const errorBox = document.getElementById("formError");
 
-  window.location.href = whatsappURL;
-});
+  if (!form) {
+    return;
+  }
+
+  form.addEventListener("submit", function (event) {
+
+    event.preventDefault();
+
+    const name = document.getElementById("customerName").value.trim();
+    const phone = document.getElementById("customerPhone").value.trim();
+    const pickup = document.getElementById("pickup").value.trim();
+    const destination = document.getElementById("destination").value.trim();
+    const parcel = document.getElementById("parcelType").value;
+    const instructions = document.getElementById("instructions").value.trim();
+
+    if (!name || !phone || !pickup || !destination || !parcel) {
+      errorBox.style.display = "block";
+      errorBox.textContent = "Please complete all required fields.";
+      return;
+    }
+
+    errorBox.style.display = "none";
+
+    const message =
+      "VOLT RUN DELIVERY - NEW ORDER REQUEST\n\n" +
+      "Customer Name: " + name + "\n" +
+      "Customer Phone: " + phone + "\n" +
+      "Pickup Location: " + pickup + "\n" +
+      "Delivery Destination: " + destination + "\n" +
+      "Parcel Type: " + parcel + "\n" +
+      "Additional Instructions: " + (instructions || "None") +
+      "\n\nPlease confirm availability and delivery charges.";
+
+    const whatsappURL =
+      "https://wa.me/" + BUSINESS_NUMBER +
+      "?text=" + encodeURIComponent(message);
+
+    window.location.assign(whatsappURL);
+
+  });
+
+})();
 </script>
 
 </body>
