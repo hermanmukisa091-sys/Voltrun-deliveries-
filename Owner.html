@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Volt Run | Owner Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f3f5f8;color:#172033;font-family:Arial,sans-serif}
+header{background:#101c30;color:white;padding:20px}
+header h2{margin:0 0 5px}
+header p{margin:0;color:#b9c6d8;font-size:13px}
+main{max-width:950px;margin:auto;padding:16px}
+.panel,.stat{background:white;border-radius:12px;padding:17px;margin-bottom:15px;box-shadow:0 2px 9px #0000000c}
+h3{margin-top:0}
+input,select,button{width:100%;padding:12px;margin:6px 0;border:1px solid #d6dce5;border-radius:8px;font-size:15px}
+button{background:#126bdf;color:white;border:0;font-weight:bold;cursor:pointer}
+button.secondary{background:#26364d}
+button.danger{background:#a83232}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stat small{color:#65738a}
+.stat strong{display:block;font-size:22px;margin-top:8px}
+.muted{color:#69778c;font-size:13px}
+.hidden{display:none!important}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:10px;border-bottom:1px solid #e6eaf0}
+.tablewrap{overflow-x:auto}
+.badge{padding:4px 7px;border-radius:5px;background:#e9eef6}
+#message{font-size:13px;color:#b02d2d}
+@media(max-width:450px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<h2>⚡ VOLT RUN DELIVERY</h2>
+<p>Private Owner Management Dashboard</p>
+</header>
+
+<main>
+<section id="login" class="panel">
+<h3>Owner Login</h3>
+<p class="muted">Sign in using your Supabase owner account.</p>
+<input id="email" type="email" placeholder="Owner email">
+<input id="password" type="password" placeholder="Password">
+<button onclick="login()">Sign in</button>
+<p id="message"></p>
+</section>
+
+<section id="dashboard" class="hidden">
+<div class="panel">
+<strong>Welcome, Owner</strong>
+<p class="muted">Business activity overview</p>
+<label>Report date</label>
+<input id="reportDate" type="date">
+<button class="secondary" onclick="loadData()">Refresh dashboard</button>
+</div>
+
+<div class="stats">
+<div class="stat"><small>Deliveries recorded</small><strong id="deliveryCount">0</strong></div>
+<div class="stat"><small>Income received</small><strong id="incomeTotal">UGX 0</strong></div>
+<div class="stat"><small>Expenses</small><strong id="expenseTotal">UGX 0</strong></div>
+<div class="stat"><small>Net cash balance</small><strong id="profit">UGX 0</strong></div>
+</div>
+
+<div class="panel">
+<h3>Record a delivery</h3>
+<form id="deliveryForm">
+<input name="customer_name" placeholder="Customer name" required>
+<input name="customer_phone" placeholder="Customer phone">
+<input name="pickup" placeholder="Pickup location" required>
+<input name="dropoff" placeholder="Delivery destination" required>
+<input name="item_description" placeholder="Item being delivered">
+<input name="distance_km" type="number" min="0" step="0.01" placeholder="Distance in km">
+<input name="delivery_fee" type="number" min="0" step="1" placeholder="Delivery fee (UGX)" required>
+<select name="payment_method">
+<option value="">Payment method</option>
+<option>Cash</option><option>Mobile Money</option><option>Bank</option>
+</select>
+<select name="payment_status">
+<option value="unpaid">Unpaid</option>
+<option value="paid">Paid</option>
+</select>
+<select name="delivery_status">
+<option value="pending">Pending</option>
+<option value="in_progress">In progress</option>
+<option value="completed">Completed</option>
+<option value="cancelled">Cancelled</option>
+</select>
+<button type="submit">Save delivery</button>
+</form>
+</div>
+
+<div class="panel">
+<h3>Record income</h3>
+<form id="incomeForm">
+<input name="source" placeholder="Income source (e.g. delivery)" required>
+<input name="description" placeholder="Description">
+<input name="amount" type="number" min="1" step="1" placeholder="Amount in UGX" required>
+<select name="payment_method">
+<option value="">Payment method</option>
+<option>Cash</option><option>Mobile Money</option><option>Bank</option>
+</select>
+<button type="submit">Save income</button>
+</form>
+</div>
+
+<div class="panel">
+<h3>Record expense</h3>
+<form id="expenseForm">
+<select name="category" required>
+<option value="">Expense category</option>
+<option>Fuel</option><option>Bicycle repairs</option>
+<option>Airtime and internet</option><option>Packaging</option>
+<option>Transport</option><option>Other</option>
+</select>
+<input name="description" placeholder="What was the expense for?">
+<input name="amount" type="number" min="1" step="1" placeholder="Amount in UGX" required>
+<select name="payment_method">
+<option value="">Payment method</option>
+<option>Cash</option><option>Mobile Money</option><option>Bank</option>
+</select>
+<button type="submit">Save expense</button>
+</form>
+</div>
+
+<div class="panel">
+<h3>Recent deliveries</h3>
+<div class="tablewrap">
+<table>
+<thead><tr><th>Customer</th><th>Destination</th><th>Fee</th><th>Status</th></tr></thead>
+<tbody id="deliveryRows"></tbody>
+</table>
+</div>
+</div>
+
+<div class="panel">
+<h3>Business records and backups</h3>
+<p class="muted">Download your records for safekeeping.</p>
+<div class="grid">
+<button class="secondary" onclick="exportCSV('deliveries')">Export deliveries</button>
+<button class="secondary" onclick="exportCSV('income')">Export income</button>
+<button class="secondary" onclick="exportCSV('expenses')">Export expenses</button>
+</div>
+<button class="danger" onclick="logout()">Log out</button>
+</div>
+</section>
+</main>
+
+<script>
+const SUPABASE_URL = "YOUR_PROJECT_URL";
+const SUPABASE_KEY = "YOUR_PUBLISHABLE_KEY";
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+let records = {deliveries:[],income:[],expenses:[]};
+
+function money(n){
+ return "UGX " + Number(n || 0).toLocaleString("en-UG");
+}
+
+function today(){
+ const d=new Date();
+ return new Date(d.getTime()-d.getTimezoneOffset()*60000)
+ .toISOString().slice(0,10);
+}
+
+document.getElementById("reportDate").value=today();
+
+async function login(){
+ const email=document.getElementById("email").value.trim();
+ const password=document.getElementById("password").value;
+ const msg=document.getElementById("message");
+ msg.textContent="Signing in...";
+
+ const {error}=await db.auth.signInWithPassword({email,password});
+ if(error){msg.textContent=error.message;return;}
+ await showDashboard();
+}
+
+async function showDashboard(){
+ const {data:{session}}=await db.auth.getSession();
+ if(!session)return;
+ document.getElementById("login").classList.add("hidden");
+ document.getElementById("dashboard").classList.remove("hidden");
+ await loadData();
+}
+
+async function logout(){
+ await db.auth.signOut();
+ document.getElementById("dashboard").classList.add("hidden");
+ document.getElementById("login").classList.remove("hidden");
+ document.getElementById("password").value="";
+}
+
+async function loadData(){
+ const date=document.getElementById("reportDate").value;
+ if(!date)return;
+
+ const tables=["deliveries","income","expenses"];
+ for(const table of tables){
+  const {data,error}=await db.from(table).select("*")
+   .eq(table==="deliveries"?"delivery_date":
+       table==="income"?"income_date":"expense_date",date)
+   .order("created_at",{ascending:false});
+  if(error){alert("Could not load "+table+": "+error.message);return;}
+  records[table]=data||[];
+ }
+
+ const completed=records.deliveries.filter(x=>x.delivery_status==="completed");
+ const income=records.income.reduce((s,x)=>s+Number(x.amount),0);
+ const expenses=records.expenses.reduce((s,x)=>s+Number(x.amount),0);
+
+ document.getElementById("deliveryCount").textContent=records.deliveries.length;
+ document.getElementById("incomeTotal").textContent=money(income);
+ document.getElementById("expenseTotal").textContent=money(expenses);
+ document.getElementById("profit").textContent=money(income-expenses);
+
+ document.getElementById("deliveryRows").innerHTML=
+ records.deliveries.map(x=>`
+ <tr>
+ <td>${escapeHTML(x.customer_name)}</td>
+ <td>${escapeHTML(x.dropoff)}</td>
+ <td>${money(x.delivery_fee)}</td>
+ <td><span class="badge">${escapeHTML(x.delivery_status)}</span></td>
+ </tr>`).join("") || "<tr><td colspan='4'>No deliveries recorded for this date.</td></tr>";
+}
+
+function escapeHTML(value){
+ return String(value??"").replace(/[&<>"']/g,c=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ })[c]);
+}
+
+function formData(form){
+ return Object.fromEntries(new FormData(form).entries());
+}
+
+async function saveRecord(table,form,dateField){
+ const data=formData(form);
+ data[dateField]=document.getElementById("reportDate").value;
+
+ for(const key of ["amount","delivery_fee","distance_km"]){
+  if(data[key]!==undefined && data[key]!==""){
+   data[key]=Number(data[key]);
+  }
+ }
+ if(data.distance_km==="")data.distance_km=0;
+
+ const {error}=await db.from(table).insert(data);
+ if(error){alert("Save failed: "+error.message);return;}
+ alert("Record saved successfully.");
+ form.reset();
+ await loadData();
+}
+
+document.getElementById("deliveryForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ saveRecord("deliveries",e.target,"delivery_date");
+});
+document.getElementById("incomeForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ saveRecord("income",e.target,"income_date");
+});
+document.getElementById("expenseForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ saveRecord("expenses",e.target,"expense_date");
+});
+
+async function exportCSV(table){
+ const {data,error}=await db.from(table).select("*")
+ .order("created_at",{ascending:false});
+ if(error){alert(error.message);return;}
+ if(!data || !data.length){alert("No records to export.");return;}
+
+ const cols=Object.keys(data[0]);
+ const csv=[cols.join(","),...data.map(row=>cols.map(col=>
+ '"'+String(row[col]??"").replace(/"/g,'""')+'"'
+ ).join(","))].join("\r\n");
+
+ const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
+ const url=URL.createObjectURL(blob);
+ const a=document.createElement("a");
+ a.href=url;
+ a.download="volt-run-"+table+"-"+today()+".csv";
+ a.click();
+ URL.revokeObjectURL(url);
+}
+
+document.getElementById("reportDate").addEventListener("change",loadData);
+
+db.auth.onAuthStateChange((event,session)=>{
+ if(session && event==="SIGNED_IN"){
+  setTimeout(showDashboard,0);
+ }
+});
+
+showDashboard();
+</script>
+</body>
+</html>
