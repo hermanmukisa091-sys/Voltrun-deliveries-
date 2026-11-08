@@ -2,305 +2,709 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Volt Run | Owner Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#f3f5f8;color:#172033;font-family:Arial,sans-serif}
-header{background:#101c30;color:white;padding:20px}
-header h2{margin:0 0 5px}
-header p{margin:0;color:#b9c6d8;font-size:13px}
-main{max-width:950px;margin:auto;padding:16px}
-.panel,.stat{background:white;border-radius:12px;padding:17px;margin-bottom:15px;box-shadow:0 2px 9px #0000000c}
+body{margin:0;background:#f1f4f8;color:#172033;font-family:Arial,sans-serif}
+header{background:#101d35;color:white;padding:22px 18px}
+header h2{margin:0}
+header p{color:#c2cee0;margin:7px 0 0;font-size:13px}
+main{max-width:1100px;margin:auto;padding:16px}
+.card,.metric{background:white;border-radius:12px;padding:17px;margin-bottom:15px;box-shadow:0 2px 8px #0000000b}
+.metric small{color:#64748b}
+.metric h2{font-size:22px;margin:10px 0 0;overflow-wrap:anywhere}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+nav{display:flex;overflow-x:auto;gap:8px;margin:18px 0}
+button{border:0;border-radius:8px;padding:12px 15px;font-weight:bold;cursor:pointer}
+nav button{background:#e1e7ef;color:#172033;white-space:nowrap}
+nav button.active,.primary{background:#1765d1;color:white}
+.danger{background:#b42318;color:white}
+input,select,textarea{width:100%;padding:12px;margin:7px 0 14px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px;background:white}
+label{font-size:13px;font-weight:bold}
 h3{margin-top:0}
-input,select,button{width:100%;padding:12px;margin:6px 0;border:1px solid #d6dce5;border-radius:8px;font-size:15px}
-button{background:#126bdf;color:white;border:0;font-weight:bold;cursor:pointer}
-button.secondary{background:#26364d}
-button.danger{background:#a83232}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.stat small{color:#65738a}
-.stat strong{display:block;font-size:22px;margin-top:8px}
-.muted{color:#69778c;font-size:13px}
 .hidden{display:none!important}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th,td{text-align:left;padding:10px;border-bottom:1px solid #e6eaf0}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.full{grid-column:1/-1}
 .tablewrap{overflow-x:auto}
-.badge{padding:4px 7px;border-radius:5px;background:#e9eef6}
-#message{font-size:13px;color:#b02d2d}
-@media(max-width:450px){.grid{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;min-width:560px;font-size:13px}
+td,th{padding:11px;text-align:left;border-bottom:1px solid #e5eaf0}
+th{background:#f3f6fa}
+.muted{font-size:13px;color:#64748b}
+#message{display:none;padding:12px;border-radius:8px;margin-bottom:14px;overflow-wrap:anywhere}
+#login{max-width:430px;margin:45px auto}
+.sectiontitle{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.statusselect{min-width:125px;padding:7px;margin:0}
+.smallbtn{padding:8px 10px;font-size:12px}
+@media(min-width:750px){.grid{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:500px){.formgrid{grid-template-columns:1fr}.full{grid-column:auto}}
 </style>
 </head>
 <body>
+
 <header>
 <h2>⚡ VOLT RUN DELIVERY</h2>
-<p>Private Owner Management Dashboard</p>
+<p>Owner Business Management System</p>
 </header>
 
 <main>
-<section id="login" class="panel">
+<div id="message"></div>
+
+<!-- OWNER LOGIN -->
+<section id="login" class="card hidden">
 <h3>Owner Login</h3>
-<p class="muted">Sign in using your Supabase owner account.</p>
-<input id="email" type="email" placeholder="Owner email">
-<input id="password" type="password" placeholder="Password">
-<button onclick="login()">Sign in</button>
-<p id="message"></p>
+<p class="muted">Sign in using your Supabase account.</p>
+<form id="loginForm">
+<label>Email address</label>
+<input id="email" type="email" required>
+<label>Password</label>
+<input id="password" type="password" required>
+<button class="primary" id="loginButton" style="width:100%" type="submit">Sign In</button>
+</form>
 </section>
 
-<section id="dashboard" class="hidden">
-<div class="panel">
-<strong>Welcome, Owner</strong>
-<p class="muted">Business activity overview</p>
-<label>Report date</label>
-<input id="reportDate" type="date">
-<button class="secondary" onclick="loadData()">Refresh dashboard</button>
+<!-- DASHBOARD -->
+<div id="app" class="hidden">
+
+<div class="sectiontitle">
+<div>
+<strong>Owner Dashboard</strong>
+<div class="muted" id="todayLabel"></div>
+</div>
+<button class="danger" id="logoutButton">Logout</button>
 </div>
 
-<div class="stats">
-<div class="stat"><small>Deliveries recorded</small><strong id="deliveryCount">0</strong></div>
-<div class="stat"><small>Income received</small><strong id="incomeTotal">UGX 0</strong></div>
-<div class="stat"><small>Expenses</small><strong id="expenseTotal">UGX 0</strong></div>
-<div class="stat"><small>Net cash balance</small><strong id="profit">UGX 0</strong></div>
+<nav>
+<button class="active" data-tab="overview">Overview</button>
+<button data-tab="deliveries">Deliveries</button>
+<button data-tab="income">Income</button>
+<button data-tab="expenses">Expenses</button>
+<button data-tab="history">History</button>
+</nav>
+
+<!-- OVERVIEW -->
+<section id="overview" class="tab">
+<h3>Today's Performance</h3>
+<div class="grid">
+<div class="metric"><small>Deliveries today</small><h2 id="dailyDeliveries">0</h2></div>
+<div class="metric"><small>Income today</small><h2 id="dailyIncome">UGX 0</h2></div>
+<div class="metric"><small>Expenses today</small><h2 id="dailyExpenses">UGX 0</h2></div>
+<div class="metric"><small>Profit today</small><h2 id="dailyProfit">UGX 0</h2></div>
 </div>
 
-<div class="panel">
-<h3>Record a delivery</h3>
-<form id="deliveryForm">
-<input name="customer_name" placeholder="Customer name" required>
-<input name="customer_phone" placeholder="Customer phone">
-<input name="pickup" placeholder="Pickup location" required>
-<input name="dropoff" placeholder="Delivery destination" required>
-<input name="item_description" placeholder="Item being delivered">
-<input name="distance_km" type="number" min="0" step="0.01" placeholder="Distance in km">
-<input name="delivery_fee" type="number" min="0" step="1" placeholder="Delivery fee (UGX)" required>
+<h3>Overall Business Performance</h3>
+<div class="grid">
+<div class="metric"><small>All deliveries</small><h2 id="allDeliveries">0</h2></div>
+<div class="metric"><small>Total income</small><h2 id="allIncome">UGX 0</h2></div>
+<div class="metric"><small>Total expenses</small><h2 id="allExpenses">UGX 0</h2></div>
+<div class="metric"><small>Overall profit</small><h2 id="allProfit">UGX 0</h2></div>
+</div>
+
+<div class="card">
+<h3>Delivery Overview</h3>
+<p>Pending: <strong id="pendingCount">0</strong></p>
+<p>In progress: <strong id="progressCount">0</strong></p>
+<p>Delivered: <strong id="completedCount">0</strong></p>
+<p>Cancelled: <strong id="cancelledCount">0</strong></p>
+<p class="muted">Profit is calculated from recorded income minus recorded expenses. Delivery fees are not automatically counted as received money.</p>
+<button class="primary" onclick="refreshAll()">Refresh Dashboard</button>
+</div>
+</section>
+
+<!-- DELIVERIES -->
+<section id="deliveries" class="tab hidden">
+<div class="card">
+<h3>Register a Delivery</h3>
+<form id="deliveryForm" class="formgrid">
+
+<div>
+<label>Customer name</label>
+<input name="customer_name" required>
+</div>
+
+<div>
+<label>Customer phone</label>
+<input name="customer_phone" required>
+</div>
+
+<div>
+<label>Pickup location</label>
+<input name="pickup" required>
+</div>
+
+<div>
+<label>Drop-off location</label>
+<input name="dropoff" required>
+</div>
+
+<div>
+<label>Item description</label>
+<input name="item_description">
+</div>
+
+<div>
+<label>Distance (KM)</label>
+<input name="distance_km" type="number" min="0.1" step="0.1" required>
+</div>
+
+<div>
+<label>Delivery fee (UGX)</label>
+<input name="delivery_fee" type="number" min="0" required>
+</div>
+
+<div>
+<label>Payment method</label>
 <select name="payment_method">
-<option value="">Payment method</option>
-<option>Cash</option><option>Mobile Money</option><option>Bank</option>
+<option>Cash</option>
+<option>Mobile Money</option>
+<option>Bank</option>
 </select>
+</div>
+
+<div>
+<label>Payment status</label>
 <select name="payment_status">
-<option value="unpaid">Unpaid</option>
-<option value="paid">Paid</option>
+<option>Pending</option>
+<option>Paid</option>
 </select>
+</div>
+
+<div>
+<label>Delivery status</label>
 <select name="delivery_status">
-<option value="pending">Pending</option>
-<option value="in_progress">In progress</option>
-<option value="completed">Completed</option>
-<option value="cancelled">Cancelled</option>
+<option>Pending</option>
+<option>Picked Up</option>
+<option>In Transit</option>
+<option>Delivered</option>
+<option>Cancelled</option>
 </select>
-<button type="submit">Save delivery</button>
+</div>
+
+<div class="full">
+<button class="primary" type="submit">Save Delivery</button>
+</div>
 </form>
 </div>
 
-<div class="panel">
-<h3>Record income</h3>
-<form id="incomeForm">
-<input name="source" placeholder="Income source (e.g. delivery)" required>
-<input name="description" placeholder="Description">
-<input name="amount" type="number" min="1" step="1" placeholder="Amount in UGX" required>
-<select name="payment_method">
-<option value="">Payment method</option>
-<option>Cash</option><option>Mobile Money</option><option>Bank</option>
-</select>
-<button type="submit">Save income</button>
-</form>
-</div>
-
-<div class="panel">
-<h3>Record expense</h3>
-<form id="expenseForm">
-<select name="category" required>
-<option value="">Expense category</option>
-<option>Fuel</option><option>Bicycle repairs</option>
-<option>Airtime and internet</option><option>Packaging</option>
-<option>Transport</option><option>Other</option>
-</select>
-<input name="description" placeholder="What was the expense for?">
-<input name="amount" type="number" min="1" step="1" placeholder="Amount in UGX" required>
-<select name="payment_method">
-<option value="">Payment method</option>
-<option>Cash</option><option>Mobile Money</option><option>Bank</option>
-</select>
-<button type="submit">Save expense</button>
-</form>
-</div>
-
-<div class="panel">
-<h3>Recent deliveries</h3>
+<div class="card">
+<h3>Delivery Records</h3>
+<p class="muted">You can change a delivery's status below.</p>
 <div class="tablewrap">
 <table>
-<thead><tr><th>Customer</th><th>Destination</th><th>Fee</th><th>Status</th></tr></thead>
+<thead>
+<tr><th>Customer</th><th>Pickup</th><th>Drop-off</th><th>Fee</th><th>Payment</th><th>Status</th></tr>
+</thead>
 <tbody id="deliveryRows"></tbody>
 </table>
 </div>
 </div>
+</section>
 
-<div class="panel">
-<h3>Business records and backups</h3>
-<p class="muted">Download your records for safekeeping.</p>
-<div class="grid">
-<button class="secondary" onclick="exportCSV('deliveries')">Export deliveries</button>
-<button class="secondary" onclick="exportCSV('income')">Export income</button>
-<button class="secondary" onclick="exportCSV('expenses')">Export expenses</button>
+<!-- INCOME -->
+<section id="income" class="tab hidden">
+<div class="card">
+<h3>Record Income</h3>
+<form id="incomeForm">
+<label>Income source</label>
+<input name="source" placeholder="e.g. Delivery payment" required>
+<label>Description</label>
+<input name="description" placeholder="Additional details">
+<label>Amount (UGX)</label>
+<input name="amount" type="number" min="1" required>
+<label>Payment method</label>
+<select name="payment_method">
+<option>Cash</option>
+<option>Mobile Money</option>
+<option>Bank</option>
+</select>
+<button class="primary" type="submit">Save Income</button>
+</form>
 </div>
-<button class="danger" onclick="logout()">Log out</button>
+<div class="card">
+<h3>Income History</h3>
+<div id="incomeRows"></div>
 </div>
 </section>
+
+<!-- EXPENSES -->
+<section id="expenses" class="tab hidden">
+<div class="card">
+<h3>Record Expense</h3>
+<form id="expenseForm">
+<label>Expense category</label>
+<input name="category" placeholder="e.g. Bicycle repair" required>
+<label>Description</label>
+<input name="description" placeholder="Additional details">
+<label>Amount (UGX)</label>
+<input name="amount" type="number" min="1" required>
+<label>Payment method</label>
+<select name="payment_method">
+<option>Cash</option>
+<option>Mobile Money</option>
+<option>Bank</option>
+</select>
+<button class="primary" type="submit">Save Expense</button>
+</form>
+</div>
+<div class="card">
+<h3>Expense History</h3>
+<div id="expenseRows"></div>
+</div>
+</section>
+
+<!-- HISTORY -->
+<section id="history" class="tab hidden">
+<div class="card">
+<h3>Business Activity History</h3>
+<p class="muted">Your saved delivery, income and expense records.</p>
+<div id="historyRows"></div>
+</div>
+</section>
+
+</div>
 </main>
 
 <script>
-  const SUPABASE_URL = "https://rqpxyqnsvtdgdhwzqwib.supabase.co";
-const SUPABASE_KEY = "YOUR_ACTUAL_SB_PUBLISHABLE_KEY";
+// SUPABASE CONNECTION
+const SUPABASE_URL =
+"https://rqpxyqnsvtdgdhwzqwib.supabase.co";
 
+const SUPABASE_KEY =
+"PASTE_YOUR_SB_PUBLISHABLE_KEY_HERE";
 
-const db = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+let db=null;
+let deliveries=[];
+let incomes=[];
+let expenses=[];
 
-let records = {deliveries:[],income:[],expenses:[]};
+const $=id=>document.getElementById(id);
 
-function money(n){
- return "UGX " + Number(n || 0).toLocaleString("en-UG");
+function notify(text,error=false){
+const box=$("message");
+box.textContent=text;
+box.style.display="block";
+box.style.background=error?"#fee2e2":"#dcfce7";
+box.style.color=error?"#991b1b":"#166534";
+}
+
+function money(value){
+return "UGX "+Number(value||0).toLocaleString("en-UG");
 }
 
 function today(){
- const d=new Date();
- return new Date(d.getTime()-d.getTimezoneOffset()*60000)
- .toISOString().slice(0,10);
-}
+const parts=new Intl.DateTimeFormat("en-CA",{
+timeZone:"Africa/Kampala",
+year:"numeric",
+month:"2-digit",
+day:"2-digit"
+}).formatToParts(new Date());
 
-document.getElementById("reportDate").value=today();
-
-async function login(){
- const email=document.getElementById("email").value.trim();
- const password=document.getElementById("password").value;
- const msg=document.getElementById("message");
- msg.textContent="Signing in...";
-
- const {error}=await db.auth.signInWithPassword({email,password});
- if(error){msg.textContent=error.message;return;}
- await showDashboard();
-}
-
-async function showDashboard(){
- const {data:{session}}=await db.auth.getSession();
- if(!session)return;
- document.getElementById("login").classList.add("hidden");
- document.getElementById("dashboard").classList.remove("hidden");
- await loadData();
-}
-
-async function logout(){
- await db.auth.signOut();
- document.getElementById("dashboard").classList.add("hidden");
- document.getElementById("login").classList.remove("hidden");
- document.getElementById("password").value="";
-}
-
-async function loadData(){
- const date=document.getElementById("reportDate").value;
- if(!date)return;
-
- const tables=["deliveries","income","expenses"];
- for(const table of tables){
-  const {data,error}=await db.from(table).select("*")
-   .eq(table==="deliveries"?"delivery_date":
-       table==="income"?"income_date":"expense_date",date)
-   .order("created_at",{ascending:false});
-  if(error){alert("Could not load "+table+": "+error.message);return;}
-  records[table]=data||[];
- }
-
- const completed=records.deliveries.filter(x=>x.delivery_status==="completed");
- const income=records.income.reduce((s,x)=>s+Number(x.amount),0);
- const expenses=records.expenses.reduce((s,x)=>s+Number(x.amount),0);
-
- document.getElementById("deliveryCount").textContent=records.deliveries.length;
- document.getElementById("incomeTotal").textContent=money(income);
- document.getElementById("expenseTotal").textContent=money(expenses);
- document.getElementById("profit").textContent=money(income-expenses);
-
- document.getElementById("deliveryRows").innerHTML=
- records.deliveries.map(x=>`
- <tr>
- <td>${escapeHTML(x.customer_name)}</td>
- <td>${escapeHTML(x.dropoff)}</td>
- <td>${money(x.delivery_fee)}</td>
- <td><span class="badge">${escapeHTML(x.delivery_status)}</span></td>
- </tr>`).join("") || "<tr><td colspan='4'>No deliveries recorded for this date.</td></tr>";
+const p=Object.fromEntries(parts.map(x=>[x.type,x.value]));
+return `${p.year}-${p.month}-${p.day}`;
 }
 
 function escapeHTML(value){
- return String(value??"").replace(/[&<>"']/g,c=>({
- "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
- })[c]);
+return String(value??"").replace(/[&<>"']/g,c=>({
+"&":"&amp;",
+"<":"&lt;",
+">":"&gt;",
+'"':"&quot;",
+"'":"&#39;"
+}[c]));
 }
 
-function formData(form){
- return Object.fromEntries(new FormData(form).entries());
+function formValues(form){
+return Object.fromEntries(new FormData(form).entries());
 }
 
-async function saveRecord(table,form,dateField){
- const data=formData(form);
- data[dateField]=document.getElementById("reportDate").value;
-
- for(const key of ["amount","delivery_fee","distance_km"]){
-  if(data[key]!==undefined && data[key]!==""){
-   data[key]=Number(data[key]);
-  }
- }
- if(data.distance_km==="")data.distance_km=0;
-
- const {error}=await db.from(table).insert(data);
- if(error){alert("Save failed: "+error.message);return;}
- alert("Record saved successfully.");
- form.reset();
- await loadData();
+function showLogin(){
+$("app").classList.add("hidden");
+$("login").classList.remove("hidden");
 }
 
-document.getElementById("deliveryForm").addEventListener("submit",e=>{
- e.preventDefault();
- saveRecord("deliveries",e.target,"delivery_date");
-});
-document.getElementById("incomeForm").addEventListener("submit",e=>{
- e.preventDefault();
- saveRecord("income",e.target,"income_date");
-});
-document.getElementById("expenseForm").addEventListener("submit",e=>{
- e.preventDefault();
- saveRecord("expenses",e.target,"expense_date");
-});
-
-async function exportCSV(table){
- const {data,error}=await db.from(table).select("*")
- .order("created_at",{ascending:false});
- if(error){alert(error.message);return;}
- if(!data || !data.length){alert("No records to export.");return;}
-
- const cols=Object.keys(data[0]);
- const csv=[cols.join(","),...data.map(row=>cols.map(col=>
- '"'+String(row[col]??"").replace(/"/g,'""')+'"'
- ).join(","))].join("\r\n");
-
- const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});
- const url=URL.createObjectURL(blob);
- const a=document.createElement("a");
- a.href=url;
- a.download="volt-run-"+table+"-"+today()+".csv";
- a.click();
- URL.revokeObjectURL(url);
+async function showApp(){
+$("login").classList.add("hidden");
+$("app").classList.remove("hidden");
+$("todayLabel").textContent=
+"Today: "+today()+" (Uganda time)";
+await refreshAll();
 }
 
-document.getElementById("reportDate").addEventListener("change",loadData);
+// INITIALIZE
+async function initialize(){
+if(!window.supabase){
+notify("Supabase library did not load. Check your internet connection.",true);
+return;
+}
+
+if(SUPABASE_KEY==="PASTE_YOUR_SB_PUBLISHABLE_KEY_HERE"){
+notify("Please add your Supabase publishable key first.",true);
+showLogin();
+return;
+}
+
+db=window.supabase.createClient(
+SUPABASE_URL,SUPABASE_KEY
+);
+
+const {data,error}=await db.auth.getSession();
+
+if(error){
+notify(error.message,true);
+showLogin();
+return;
+}
+
+if(data.session){
+await showApp();
+}else{
+showLogin();
+}
 
 db.auth.onAuthStateChange((event,session)=>{
- if(session && event==="SIGNED_IN"){
-  setTimeout(showDashboard,0);
- }
+if(event==="SIGNED_IN"){
+showApp();
+}
+if(event==="SIGNED_OUT"){
+showLogin();
+}
+});
+}
+
+// LOGIN
+$("loginForm").addEventListener("submit",async e=>{
+e.preventDefault();
+
+if(!db){
+notify("Supabase is not connected. Check the publishable key.",true);
+return;
+}
+
+const button=$("loginButton");
+button.disabled=true;
+button.textContent="Signing in...";
+
+const {error}=await db.auth.signInWithPassword({
+email:$("email").value.trim(),
+password:$("password").value
 });
 
-showDashboard();
+button.disabled=false;
+button.textContent="Sign In";
+
+if(error){
+notify("Login failed: "+error.message,true);
+}
+});
+
+$("logoutButton").addEventListener("click",async()=>{
+const {error}=await db.auth.signOut();
+if(error) notify(error.message,true);
+});
+
+// NAVIGATION
+document.querySelectorAll("nav button").forEach(button=>{
+button.addEventListener("click",()=>{
+document.querySelectorAll("nav button").forEach(b=>
+b.classList.remove("active"));
+
+document.querySelectorAll(".tab").forEach(t=>
+t.classList.add("hidden"));
+
+button.classList.add("active");
+$(button.dataset.tab).classList.remove("hidden");
+});
+});
+
+// LOAD DATABASE RECORDS
+async function loadTable(table,dateColumn){
+const {data,error}=await db
+.from(table)
+.select("id,created_at,"+dateColumn)
+.order("created_at",{ascending:false})
+.limit(500);
+
+if(error) throw new Error(table+": "+error.message);
+
+// Fetch full rows after checking the table
+const result=await db
+.from(table)
+.select()
+.order("created_at",{ascending:false})
+.limit(500);
+
+if(result.error) throw new Error(table+": "+result.error.message);
+return result.data||[];
+}
+
+async function refreshAll(){
+if(!db) return;
+
+try{
+notify("Loading your business records...");
+
+const results=await Promise.all([
+loadTable("deliveries","delivery_date"),
+loadTable("income","income_date"),
+loadTable("expenses","expense_date")
+]);
+
+deliveries=results[0];
+incomes=results[1];
+expenses=results[2];
+
+renderDashboard();
+renderDeliveries();
+renderIncome();
+renderExpenses();
+renderHistory();
+
+notify("Business records updated successfully.");
+
+}catch(error){
+notify("Database error: "+error.message,true);
+}
+}
+
+// CALCULATE DAILY AND OVERALL PERFORMANCE
+function sum(records){
+return records.reduce((total,r)=>
+total+Number(r.amount||0),0);
+}
+
+function renderDashboard(){
+const date=today();
+
+const todayDeliveries=deliveries.filter(r=>
+r.delivery_date===date);
+
+const todayIncome=incomes.filter(r=>
+r.income_date===date);
+
+const todayExpenses=expenses.filter(r=>
+r.expense_date===date);
+
+const dailyIn=sum(todayIncome);
+const dailyOut=sum(todayExpenses);
+
+const allIn=sum(incomes);
+const allOut=sum(expenses);
+
+$("dailyDeliveries").textContent=todayDeliveries.length;
+$("dailyIncome").textContent=money(dailyIn);
+$("dailyExpenses").textContent=money(dailyOut);
+$("dailyProfit").textContent=money(dailyIn-dailyOut);
+
+$("allDeliveries").textContent=deliveries.length;
+$("allIncome").textContent=money(allIn);
+$("allExpenses").textContent=money(allOut);
+$("allProfit").textContent=money(allIn-allOut);
+
+$("pendingCount").textContent=
+deliveries.filter(r=>r.delivery_status==="Pending").length;
+
+$("progressCount").textContent=
+deliveries.filter(r=>
+["Picked Up","In Transit"].includes(r.delivery_status)
+).length;
+
+$("completedCount").textContent=
+deliveries.filter(r=>r.delivery_status==="Delivered").length;
+
+$("cancelledCount").textContent=
+deliveries.filter(r=>r.delivery_status==="Cancelled").length;
+}
+
+// DELIVERY RECORDS
+function renderDeliveries(){
+const statuses=[
+"Pending","Picked Up","In Transit","Delivered","Cancelled"
+];
+
+$("deliveryRows").innerHTML=deliveries.map(r=>`
+<tr>
+<td>${escapeHTML(r.customer_name)}</td>
+<td>${escapeHTML(r.pickup)}</td>
+<td>${escapeHTML(r.dropoff)}</td>
+<td>${money(r.delivery_fee)}</td>
+<td>${escapeHTML(r.payment_status)}</td>
+<td>
+<select class="statusselect delivery-status"
+data-id="${escapeHTML(r.id)}">
+${statuses.map(s=>`
+<option value="${s}" ${r.delivery_status===s?"selected":""}>
+${s}
+</option>`).join("")}
+</select>
+</td>
+</tr>
+`).join("")||
+"<tr><td colspan='6'>No deliveries recorded.</td></tr>";
+}
+
+// UPDATE DELIVERY STATUS
+document.addEventListener("change",async e=>{
+if(!e.target.classList.contains("delivery-status")) return;
+
+const id=e.target.dataset.id;
+const status=e.target.value;
+
+e.target.disabled=true;
+
+const {error}=await db
+.from("deliveries")
+.update({delivery_status:status})
+.eq("id",id);
+
+e.target.disabled=false;
+
+if(error){
+notify("Could not update delivery: "+error.message,true);
+await refreshAll();
+return;
+}
+
+notify("Delivery status updated.");
+await refreshAll();
+});
+
+// INCOME AND EXPENSE RECORDS
+function recordTable(records,dateField){
+return `<div class="tablewrap">
+<table>
+<thead>
+<tr><th>Date</th><th>Description</th><th>Amount</th></tr>
+</thead>
+<tbody>
+${records.map(r=>`
+<tr>
+<td>${escapeHTML(r[dateField]||"")}</td>
+<td>${escapeHTML(
+r.description||r.source||r.category||""
+)}</td>
+<td>${money(r.amount)}</td>
+</tr>
+`).join("")||
+"<tr><td colspan='3'>No records yet.</td></tr>"}
+</tbody>
+</table>
+</div>`;
+}
+
+function renderIncome(){
+$("incomeRows").innerHTML=
+recordTable(incomes,"income_date");
+}
+
+function renderExpenses(){
+$("expenseRows").innerHTML=
+recordTable(expenses,"expense_date");
+}
+
+// BUSINESS HISTORY
+function renderHistory(){
+const records=[
+...deliveries.map(r=>({
+type:"Delivery",
+date:r.delivery_date,
+description:r.customer_name+" - "+r.pickup+" to "+r.dropoff,
+amount:r.delivery_fee
+})),
+...incomes.map(r=>({
+type:"Income",
+date:r.income_date,
+description:r.source||r.description,
+amount:r.amount
+})),
+...expenses.map(r=>({
+type:"Expense",
+date:r.expense_date,
+description:r.category||r.description,
+amount:r.amount
+}))
+];
+
+records.sort((a,b)=>
+String(b.date||"").localeCompare(String(a.date||""))
+);
+
+$("historyRows").innerHTML=`
+<div class="tablewrap">
+<table>
+<thead>
+<tr><th>Type</th><th>Date</th><th>Description</th><th>Amount</th></tr>
+</thead>
+<tbody>
+${records.map(r=>`
+<tr>
+<td>${escapeHTML(r.type)}</td>
+<td>${escapeHTML(r.date||"")}</td>
+<td>${escapeHTML(r.description||"")}</td>
+<td>${money(r.amount)}</td>
+</tr>
+`).join("")||
+"<tr><td colspan='4'>No business activity recorded.</td></tr>"}
+</tbody>
+</table>
+</div>`;
+}
+
+// SAVE RECORDS
+async function saveRecord(form,table,dateField){
+const button=form.querySelector("button[type=submit]");
+const original=button.textContent;
+
+button.disabled=true;
+button.textContent="Saving...";
+
+try{
+const values=formValues(form);
+const record={
+...values,
+[dateField]:today()
+};
+
+if(table==="deliveries"){
+record.distance_km=Number(record.distance_km);
+record.delivery_fee=Number(record.delivery_fee);
+}else{
+record.amount=Number(record.amount);
+}
+
+const {error}=await db.from(table).insert(record);
+
+if(error) throw error;
+
+form.reset();
+notify("Record saved successfully.");
+
+await refreshAll();
+
+}catch(error){
+notify("Save failed: "+error.message,true);
+}finally{
+button.disabled=false;
+button.textContent=original;
+}
+}
+
+$("deliveryForm").addEventListener("submit",e=>{
+e.preventDefault();
+saveRecord(e.target,"deliveries","delivery_date");
+});
+
+$("incomeForm").addEventListener("submit",e=>{
+e.preventDefault();
+saveRecord(e.target,"income","income_date");
+});
+
+$("expenseForm").addEventListener("submit",e=>{
+e.preventDefault();
+saveRecord(e.target,"expenses","expense_date");
+});
+
+initialize();
 </script>
 </body>
 </html>
